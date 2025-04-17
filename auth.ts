@@ -4,12 +4,16 @@ import {db} from "@/lib/db";
 import authConfig from "@/auth.config";
 import { getUserById } from "@/data/user";
 import { UserRole } from "@prisma/client";
-
+import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 
 
 
 export const { handlers, auth,signIn,signOut
  } = NextAuth({
+  pages: {
+    signIn: "/auth/login",
+    error: "auth/error"
+  },
   events : {
     async linkAccount({ user}) {
       await db.user.update({
@@ -20,16 +24,37 @@ export const { handlers, auth,signIn,signOut
   },
   callbacks: {
 
-    /* async signIn({user}){
+    async signIn({user, account}){
+      
+      // allow OAuth without email verification
+      if (account?.provider !== "credentials") return true;
 
-      const existingUser = await getUserByEmail(user.id as string);
-
-      if (!existingUser || !existingUser.emailVerified) {
-        return false;
+      if (!user.id) {
+        throw new Error("User ID is missing");
       }
+      const existingUser = await getUserById(user.id);
 
+      // prevent sign in without email verification
+      if (!existingUser?.emailVerified) return false;
+
+      //TODO : add 2FA check
+
+      if (existingUser.isTwoFactorEnabled) {
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
+
+        if (!twoFactorConfirmation) {
+          return false;
+        }
+        
+        await db.twoFactorConfirmation.delete({
+          where : {
+            id : twoFactorConfirmation.id
+          }
+        });
+      }
+      
       return true;
-    }, */
+    },
     async session({token, session}){
 
       if (token.sub && session.user) {
