@@ -1,7 +1,7 @@
 "use client";
 
 import { CardWrapper } from "@/components/auth/card-wrapper";
-import { loginSchema, ResetSchema } from "@/schemas";
+import { ResetSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Input } from "@/components/ui/input";

@@ -103,7 +103,7 @@ export const LoginForm = () => {
                                 )}
 
                                 {!showTwoFactor &&
-                                <>    
+                                (<>    
                                     <FormField 
                                         control={form.control}
                                         name={"email"}
@@ -148,11 +148,11 @@ export const LoginForm = () => {
                                         </FormItem>
                                         )}
                                     />
-                                </>
+                                </>)
                                 }
                             </div>
                         <FormError message={error || urlError}/>
-                        <FormSuccess message={success}/>
+                        <FormSuccess message={success || ""}/>
                         <Button type="submit"
                             disabled={isPending} 
                             className="w-full">

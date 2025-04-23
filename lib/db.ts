@@ -2,7 +2,7 @@ import {PrismaClient} from '@prisma/client';
 
 declare global {
   // allow global `var` declarations
-    var prisma: PrismaClient | undefined;
+    const prisma: PrismaClient | undefined;
 }
 // allow global `let` and `const` declarations
 

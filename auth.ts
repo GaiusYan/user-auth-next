@@ -46,6 +46,8 @@ export const { handlers, auth,signIn,signOut
           return false;
         }
         
+        //console.log("twoFactorConfirmation", twoFactorConfirmation);
+        
         await db.twoFactorConfirmation.delete({
           where : {
             id : twoFactorConfirmation.id
@@ -65,6 +67,11 @@ export const { handlers, auth,signIn,signOut
       if (token.role && session.user) {
         session.user.role = token.role as UserRole;
       } 
+
+      
+      if (session.user) {
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+      } 
       console.log(session);
       
       return session;
@@ -79,6 +86,7 @@ export const { handlers, auth,signIn,signOut
       const existingUser = await getUserById(token.sub);
       
       token.role = existingUser?.role;
+      token.isTwoFactorEnabled = existingUser?.isTwoFactorEnabled;
       if (!existingUser) return token;
       return token;
     }
