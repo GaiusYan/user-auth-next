@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { UserButton } from '@/components/auth/user-button'
 const Navbar = () =>  {
 
-    const pathname = usePathname();
+const pathname = usePathname();
   return (
     <nav className='bg-secondary flex justify-between items-center p-4
      rounded-xl w-[600px] shadow-sm'>

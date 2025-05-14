@@ -1,4 +1,24 @@
+import { UserRole } from '@prisma/client';
 import * as z from 'zod';
+
+
+export const SettingsSchema = z.object({
+  name: z.optional(z.string()),
+  isTwoFactorEnabled: z.optional(z.boolean()),
+  role: z.enum([UserRole.ADMIN,UserRole.USER]),
+  email: z.optional(z.string().email()),
+  password: z.optional(z.string().min(6)),
+  newPassword: z.optional(z.string().min(6))
+}).refine((data) => {
+
+  if (data.newPassword && !data.password){
+    return false;
+  }
+  return true;
+},{
+  message: 'Les deux mots de passe doivent être identiques',
+  path: ['password'],
+})
 
 export const ResetSchema = z.object({
   email: z.string().email({
